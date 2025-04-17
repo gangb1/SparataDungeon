@@ -25,17 +25,16 @@
 - [.NET SDK 다운로드](https://dotnet.microsoft.com/download)
 - 설치 확인:  
   ```
-  bash
   dotnet --version
   ```
 ### 2. 저장소 클론 또는 다운로드
-```bash
+```
 git clone https://github.com/your-username/sparta-dungeon.git
 cd sparta-dungeon
 ```
 
 ```
-<pre> bash dotnet run
+dotnet run
 ```
 ⚠️ Program.cs에 모든 클래스가 포함된 경우 이 파일만 프로젝트 내에 위치하면 됩니다.
 추가적인 .csproj 파일 생성이 필요할 수도 있습니다.
