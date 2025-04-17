@@ -29,8 +29,9 @@
   dotnet --version
   ```
 ### 2. 저장소 클론 또는 다운로드
+```bash
 git clone https://github.com/your-username/sparta-dungeon.git
-cd sparta-dungeon
+cd sparta-dungeon`` ```</pre>
 
 
 <pre> ```bash dotnet run
