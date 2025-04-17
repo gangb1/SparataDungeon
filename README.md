@@ -44,6 +44,15 @@ cd sparta-dungeon`` ```</pre>
 저장 위치는 실행 디렉토리입니다.
 
 📁 파일 구조 예시
-<pre> ```bash SpartaDungeon/ ├── Program.cs ├── README.md ├── save.json ``` </pre>
+## 📁 프로젝트 구조
+
+```
+SpartaDungeon/
+├── SpartaDungeon.cs             # 메인 프로그램 및 전체 로직이 담긴 파일
+├── save.json                    # 저장된 게임 데이터 파일
+├── README.md                    # 프로젝트 설명서
+├── .gitignore                   # Git 무시할 파일 목록
+└── SpartaDungeon.sln           # 솔루션 파일 (있는 경우)
+```
 
 
