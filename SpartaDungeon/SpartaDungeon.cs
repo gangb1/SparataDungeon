@@ -5,7 +5,7 @@ using System.Xml.Serialization;
 using System.Collections.Generic;
 
 
-namespace SpartaDungeon.GameCore
+namespace SpartaDungeon
 {
 
 
@@ -377,14 +377,14 @@ namespace SpartaDungeon.GameCore
             RequiredDefense = 13,
             BaseReward = 700,
             RewardExp = 50
-        };
+        };//네번째 던전
         Dungeon FourthDungeon = new Dungeon
         {
             Name = "네번째 던전",
             RequiredDefense= 16,
             BaseReward= 1200,
             RewardExp= 80
-        };
+        };//마지막 던전
         Dungeon FinalDungeon = new Dungeon
         {
             Name = "최종 던전",
@@ -396,7 +396,7 @@ namespace SpartaDungeon.GameCore
 
 
 
-
+        //휴식
         public void Rest(Character player)
         {
             int RestCost = 300;
@@ -564,7 +564,7 @@ namespace SpartaDungeon.GameCore
                 }
             }
         }
-
+        //경험치 획득
         public void GainExperience(int amount)
         {
             Console.WriteLine($"경험치 {amount}를 획득했습니다.");
@@ -576,6 +576,7 @@ namespace SpartaDungeon.GameCore
                 LevelUp();
             }
         }
+        //레벨업
         private void LevelUp()
         {
             Level++;
