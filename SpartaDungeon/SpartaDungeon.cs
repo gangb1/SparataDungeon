@@ -23,7 +23,7 @@ namespace SpartaDungeon.GameCore
 
     }
 
-            
+
 
     //메뉴 매니저
     class MenuManager
@@ -205,14 +205,14 @@ namespace SpartaDungeon.GameCore
                 }
                 Console.WriteLine("\n98. 판매 메뉴로 이동");
                 Console.WriteLine("\n0. 돌아가기");
-                Console.WriteLine("원하시는 행동을 입력해주세요.");
+                Console.WriteLine("\n원하시는 행동을 입력해주세요.");
 
                 string input = Console.ReadLine();
 
                 if (int.TryParse(input, out int choice))
                 {
                     if (choice == 0) break;
-                    else if(choice == 98)
+                    else if (choice == 98)
                     {
                         ShowSellMenu(player);
                         continue;
@@ -256,29 +256,29 @@ namespace SpartaDungeon.GameCore
         //판매 메뉴 메서드
         private void ShowSellMenu(Character player)
         {
-            while(true)
+            while (true)
             {
                 Console.Clear();
-                Console.WriteLine("v판매할 아이템을 선택하세요. \n");
-                
-                if(player.Inventory.Items.Count == 0)
+                Console.WriteLine("판매할 아이템을 선택하세요. \n");
+
+                if (player.Inventory.Items.Count == 0)
                 {
                     Console.WriteLine("판매할 아이템이 없습니다.");
-                    Console.WriteLine("아무 키나 눌러 상점으로 돌아갑니다...");
+                    Console.WriteLine("\n아무 키나 눌러 상점으로 돌아갑니다...");
                     Console.ReadKey();
                     return;
                 }
-                for(int i = 0; i< player.Inventory.Items.Count; i++)
+                for (int i = 0; i < player.Inventory.Items.Count; i++)
                 {
                     Console.Write($"{i + 1}. ");
                     player.Inventory.Items[i].PrintInfo();
                 }
-                Console.WriteLine("0. 돌아가기");
-                Console.WriteLine("원하시는 행동을 입력해주세요");
+                Console.WriteLine("\n0. 돌아가기");
+                Console.WriteLine("\n원하시는 행동을 입력해주세요");
                 string input = Console.ReadLine();
 
                 if (input == "0") break;
-                if(int.TryParse(input, out int choice) && choice >= 1 && choice <= player.Inventory.Items.Count)
+                if (int.TryParse(input, out int choice) && choice >= 1 && choice <= player.Inventory.Items.Count)
                 {
                     Item seleted = player.Inventory.Items[choice - 1];
                     int sellPrice = seleted.Price / 2;
@@ -288,7 +288,7 @@ namespace SpartaDungeon.GameCore
                 }
                 else
                 {
-                    Console.WriteLine("잘못된 입력입니다.");
+                    Console.WriteLine("\n잘못된 입력입니다.");
                 }
                 Console.WriteLine("\n계속하려면 아무 키나 누르세요...");
                 Console.ReadKey();
@@ -315,7 +315,6 @@ namespace SpartaDungeon.GameCore
                             break;
                         case 2:
                             SecondDungeon.Enter(player);
-
                             break;
                         case 3:
                             ThirdDungeon.Enter(player);
@@ -347,22 +346,24 @@ namespace SpartaDungeon.GameCore
         {
             Name = "첫번째 던전",
             RequiredDefense = 7,
-            BaseReward = 200
+            BaseReward = 200,
+            RewardExp = 20
 
         };//두번째 던전
         Dungeon SecondDungeon = new Dungeon
         {
             Name = "두번째 던전",
             RequiredDefense = 10,
-            BaseReward = 500
+            BaseReward = 500,
+            RewardExp = 40
 
         };//세번째 던전
         Dungeon ThirdDungeon = new Dungeon
         {
             Name = "세번째 던전",
             RequiredDefense = 13,
-            BaseReward = 700
-
+            BaseReward = 700,
+            RewardExp = 60
         };
 
 
@@ -378,11 +379,11 @@ namespace SpartaDungeon.GameCore
             while (true)
             {
                 if (int.TryParse(Console.ReadLine(), out int choice))
-                    {
+                {
 
-                    if(choice == 1)
+                    if (choice == 1)
                     {
-                        if(player.Gold >= RestCost)
+                        if (player.Gold >= RestCost)
                         {
                             if (player.Hp >= player.MaxHp)
                             {
@@ -413,7 +414,7 @@ namespace SpartaDungeon.GameCore
                             break;
                         }
                     }
-                    else if(choice == 2)
+                    else if (choice == 2)
                     {
                         Console.WriteLine("\n휴식을 취하지 않았습니다.");
                         Console.WriteLine("\n계속하려면 아무 키나 누르세요...");
@@ -460,7 +461,10 @@ namespace SpartaDungeon.GameCore
         [JsonInclude] public int BaseDefense { get; protected set; }
         [JsonInclude] public string ClassType;
         [JsonInclude] public int MaxHp { get; set; }
-       
+        [JsonInclude] public int Level { get; set; } = 1;
+        [JsonInclude] public int Experience { get; set; }
+        [JsonInclude] public int ExperienceToNextLevel => Level * 100;
+
 
         //캐릭터 생성 시 이름 설정 및 인벤토리와 장비 매니저 초기화
         public Character()
@@ -481,7 +485,7 @@ namespace SpartaDungeon.GameCore
         //캐릭터 스탯 출력
         public void PrintStat()
         {
-            Console.WriteLine("Lv. 01");
+            Console.WriteLine($"Lv.{Level}");
             Console.WriteLine($"{this.Name}({this.JobName})");
 
             string attackBonuse = Attack > BaseAttack ? $" (+{Attack - BaseAttack})" : "";
@@ -530,6 +534,27 @@ namespace SpartaDungeon.GameCore
             }
         }
 
+        public void GainExperience(int amount)
+        {
+            Console.WriteLine($"경험치 {amount}를 획득했습니다.");
+            Experience += amount;
+
+            while (Experience >= ExperienceToNextLevel)
+            {
+                Experience -= ExperienceToNextLevel;
+                LevelUp();
+            }
+        }
+        private void LevelUp()
+        {
+            Level++;
+            MaxHp += 20;
+            Attack += 2;
+            Hp = MaxHp;
+            Console.WriteLine($"\n레벨 업! {Level}레벨이 되었습니다.");
+            Console.WriteLine($"\nMaxHP: {MaxHp}, 공격력: {Attack}");
+
+        }
 
 
 
@@ -556,6 +581,7 @@ namespace SpartaDungeon.GameCore
             Gold = 1500;
             Attack = BaseAttack;
             Defense = BaseDefense;
+            Level = 1;
         }
     }
     //직업 궁수
@@ -579,6 +605,7 @@ namespace SpartaDungeon.GameCore
             Gold = 1500;
             Attack = BaseAttack;
             Defense = BaseDefense;
+            Level = 1;
         }
     }
     //아이템 클래스
@@ -825,6 +852,7 @@ namespace SpartaDungeon.GameCore
         public string Name { get; set; }
         public int RequiredDefense { get; set; }
         public int BaseReward { get; set; }
+        public int RewardExp;
 
         private Random random = new();
         private Random Hprandom = new();
@@ -836,7 +864,7 @@ namespace SpartaDungeon.GameCore
             Console.WriteLine($"[{Name}] 던전에 입장 시도 중...\n");
             int beforeHp = player.Hp;
             while (true)
-            {   
+            {
                 //방어력 > 권장방어력
                 if (player.Defense >= RequiredDefense)
                 {
@@ -849,6 +877,9 @@ namespace SpartaDungeon.GameCore
                     Console.WriteLine("[탐험 결과]\n");
                     Console.WriteLine($"{beforeHp} -> {player.Hp}");
                     GrantReward(player);
+                    player.GainExperience(RewardExp);
+
+
                     break;
                 }//방어력 < 권장방어력
                 else
@@ -897,8 +928,8 @@ namespace SpartaDungeon.GameCore
             Console.WriteLine("\n계속하려면 아무 키나 누르세요...");
             Console.ReadKey();
         }
-            //던전 보상 메서드
-            private void GrantReward(Character player)
+        //던전 보상 메서드
+        private void GrantReward(Character player)
         {
             int reward = BaseReward + player.Attack * 10;
             int bonusreward = player.Attack * 10;
@@ -921,61 +952,61 @@ namespace SpartaDungeon.GameCore
 
 
 
-//저장 메서드
-static class SaveSystem
-{
-    const string SaveFile = "save.json";
-
-    public static void Save(Character player)
+    //저장 메서드
+    static class SaveSystem
     {
-        if (player is Warrior) player.ClassType = "Warrior";
-        else if (player is Archer) player.ClassType = "Archer";
+        const string SaveFile = "save.json";
 
-        //Json 저장 옵션
-        var options = new JsonSerializerOptions
+        public static void Save(Character player)
         {
-            WriteIndented = true,
-            IncludeFields = true,
-            Converters = { new JsonStringEnumConverter() }
+            if (player is Warrior) player.ClassType = "Warrior";
+            else if (player is Archer) player.ClassType = "Archer";
 
-        };
+            //Json 저장 옵션
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                IncludeFields = true,
+                Converters = { new JsonStringEnumConverter() }
 
-        string json = JsonSerializer.Serialize(player, options);
-        File.WriteAllText(SaveFile, json);
-        Console.WriteLine("\n게임이 저장되었습니다.");
-        Console.ReadKey();
-    }
-    //불러오기 메서드
-    public static Character Load()
-    {
-        if (!File.Exists(SaveFile))
+            };
+
+            string json = JsonSerializer.Serialize(player, options);
+            File.WriteAllText(SaveFile, json);
+            Console.WriteLine("\n게임이 저장되었습니다.");
+            Console.ReadKey();
+        }
+        //불러오기 메서드
+        public static Character Load()
         {
-            return null;
+            if (!File.Exists(SaveFile))
+            {
+                return null;
+            }
+
+            var options = new JsonSerializerOptions
+            {
+                IncludeFields = true,
+                Converters = { new JsonStringEnumConverter() }
+            };
+
+            string json = File.ReadAllText(SaveFile);
+            Character loaded = JsonSerializer.Deserialize<Character>(json, options);
+            //로드된 캐릭터 스탯 계산
+            if (loaded != null)
+            {
+                loaded.Attack = loaded.BaseAttack;
+                loaded.Defense = loaded.BaseDefense;
+                loaded.Inventory.FixNullReferences();
+                loaded.Equipment.FixNullReferences();
+                loaded.RecalculateStats();
+            }
+            Console.WriteLine("\n게임을 불러왔습니다.");
+            Console.ReadKey();
+            return loaded;
         }
 
-        var options = new JsonSerializerOptions
-        {
-            IncludeFields = true,
-            Converters = { new JsonStringEnumConverter() }
-        };
-
-        string json = File.ReadAllText(SaveFile);
-        Character loaded = JsonSerializer.Deserialize<Character>(json, options);
-        //로드된 캐릭터 스탯 계산
-        if (loaded != null)
-        {
-            loaded.Attack = loaded.BaseAttack;
-            loaded.Defense = loaded.BaseDefense;
-            loaded.Inventory.FixNullReferences();
-            loaded.Equipment.FixNullReferences();
-            loaded.RecalculateStats();
-        }
-        Console.WriteLine("\n게임을 불러왔습니다.");
-        Console.ReadKey();
-        return loaded;
     }
-
-}
 
 
 
@@ -987,12 +1018,15 @@ static class SaveSystem
     {
         static void Main(string[] args)
         {
+            Character player = null;
+            while (true)
+            {
                 ShowIntro();
-                Character player = null;
                 Console.Clear();
                 Console.WriteLine("1. 새 게임 시작");
                 Console.WriteLine("2. 게임 불러오기");
-                Console.WriteLine("원하시는 행동을 선택해주세요.");
+                Console.WriteLine("0. 게임 종료");
+                Console.WriteLine("\n원하시는 행동을 선택해주세요.");
                 string input = Console.ReadLine();
                 if (input == "1")
                 {
@@ -1009,36 +1043,61 @@ static class SaveSystem
                     while (true)
                     {
                         Console.WriteLine("직업을 선택하세요 \n1.전사 2. 궁수");
-                        int job = int.Parse(Console.ReadLine());
-                        if (job == 1)
+                        if (int.TryParse(Console.ReadLine(), out int job))
                         {
-                            player = new Warrior(name);
-                            break;
-                        }
-                        else if (job == 2)
-                        {
-                            player = new Archer(name);
-                            break;
+                            if (job == 1)
+                            {
+                                player = new Warrior(name);
+                                break;
+                            }
+                            else if (job == 2)
+                            {
+                                player = new Archer(name);
+                                break;
+                            }
+                            else
+                            {
+                                Console.WriteLine("잘못된 입력입니다.");
+                                Console.WriteLine("\n아무 키나 누르면 다시 시도합니다.");
+                                Console.ReadKey();
+                                Console.Clear();
+                            }
                         }
                         else
                         {
-                            Console.WriteLine("잘못된 입력입니다.");
+                            Console.WriteLine("잘못된 입력입니다 숫자를 입력해주세요.");
+                            Console.WriteLine("\n아무 키나 누르면 다시 시도합니다.");
+                            Console.ReadKey();
+                            Console.Clear();
                         }
                     }
+                    break;
                 }
                 else if (input == "2")
                 {
                     player = SaveSystem.Load();
-                }
 
-                if (player == null)
+                    if (player == null)
+                    {
+                        Console.WriteLine("플레이어 정보가 없습니다. 먼저 게임을 시작하거나 불러오세요.");
+                        Console.WriteLine("아무 키나 누르면 인트로 화면으로 돌아갑니다.");
+                        Console.ReadKey();
+                        continue;
+                    }
+                    break;
+                }
+                else if (input == "0")
                 {
-                    Console.WriteLine("플레이어 정보가 없습니다. 먼저 게임을 시작하거나 불러오세요.");
-                    Console.ReadKey();
+                    Console.WriteLine("게임을 종료합니다.");
                     return;
                 }
+                else
+                {
+                    Console.WriteLine("올바른 번호를 입력하세요.");
+                }
+            }
 
-                MenuManager menu = new MenuManager();
+            MenuManager menu = new MenuManager();
 
 
             while (player.Hp > 0)
@@ -1047,7 +1106,7 @@ static class SaveSystem
                 menu.ShowMainMenu();
 
                 if (int.TryParse(Console.ReadLine(), out int choice))
-                    {
+                {
 
                     switch (choice)
                     {
@@ -1074,7 +1133,7 @@ static class SaveSystem
                         case 5:
                             menu.Rest(player);
                             break;
-                            
+
                         //세이브
                         case 6:
                             SaveSystem.Save(player);
@@ -1103,18 +1162,19 @@ static class SaveSystem
 
             //캐릭터 사망
             Console.Clear();
-            Console.WriteLine("캐락터가 사망했습니다!. 게임을 처음부터 다시 시작합니다.");
+            Console.WriteLine("캐릭터가 사망했습니다!. 게임을 처음부터 다시 시작합니다.");
             Console.WriteLine("계속하려면 아무 키나 누르세요...");
             Console.ReadKey();
         }
 
 
+
                                 // 인트로
     public static void ShowIntro()
-    {
+        {
 
-        Console.Clear();
-        Console.WriteLine(@"
+            Console.Clear();
+            Console.WriteLine(@"
                                   _________                    __                   
                                  /   _____/__________ ________/  |______            
                                  \_____  \\____ \__  \\_  __ \   __\__  \           
@@ -1131,14 +1191,14 @@ static class SaveSystem
                                        ★ Sparta Dungeon - 영웅의 전당 ★
 
                                                                                    ");
-        Console.WriteLine("\n\n\n\n\n\n");
-        Console.WriteLine("\t\t\t\t\t엔터를 눌러 게임을 시작하세요...");
-        Console.ReadLine();
+            Console.WriteLine("\n\n\n\n\n\n");
+            Console.WriteLine("\t\t\t\t\t엔터를 눌러 게임을 시작하세요...");
+            Console.ReadLine();
+        }
+
+
+
     }
-
-
-
-}
 
 }
 
