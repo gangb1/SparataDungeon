@@ -30,12 +30,25 @@
 ### 2. 저장소 클론 또는 다운로드
 ```
 git clone https://github.com/your-username/sparta-dungeon.git
-cd sparta-dungeon
 ```
 
 ```
+mkdir Mygames
+cd SpartaGame
+```
+### 3. 프로젝트 파일 생성
+
+```
+dotnet new console
+```
+### 4. C# 콘솔 생성(로컬 디스크 > WINDOWS > SYSTEM32)
+
+### 5. 복사했던 cs 파일을 폴더 안에 있는 program.cs 파일을 대체하기
+```
 dotnet run
 ```
+### 6. 실행
+
 ⚠️ Program.cs에 모든 클래스가 포함된 경우 이 파일만 프로젝트 내에 위치하면 됩니다.
 추가적인 .csproj 파일 생성이 필요할 수도 있습니다.
 
