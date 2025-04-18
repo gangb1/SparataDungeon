@@ -169,13 +169,13 @@ namespace SpartaDungeon.GameCore
                 new Item("수련자 갑옷", 0, 3, "수련에 도움을 주는 갑옷입니다. ",500,Itemtype.Armor),
                 new Item("무쇠갑옷", 0, 5, ".무쇠로 만들어져 튼튼한 갑옷입니다. ",800,Itemtype.Armor),
                 new Item("스파르타의 갑옷", 0, 10, "스파르타의 전사들이 사용했다는 전설의 갑옷입니다. ",1200,Itemtype.Armor),
-                new Item("낡은 검", 2, 0, "쉽게 볼 수 있는 낡은 검 입니다. ",300,Itemtype.Weapon),
-                new Item("청동 도끼", 5, 0, "어디선가 사용됐던거 같은 도끼입니다. ",700,Itemtype.Weapon),
-                new Item("스파르타의 창", 7, 0, "스파르타의 전사들이 사용했다는 전설의 창입니다. ",1500,Itemtype.Weapon),
-                new Item("은 반지",1,1,"공격력과 방어력을 소폭 높여주는 반지입니다.",600,Itemtype.Accessory),
-                new Item("금 반지",3,2,"공격력과 방어력을 높여주는 반지입니다.",1000,Itemtype.Accessory),
-                new Item("옥 반지",5,4,"한국의 얼과 혼이 담겨있다고 알려지는 반지입니다.",1700,Itemtype.Accessory),
-                new Item("절대 반지",10,10,"공격력과 방어력을 소폭 높여주는 반지입니다.",5000,Itemtype.Accessory)
+                new Item("낡은 검", 2.0f, 0, "쉽게 볼 수 있는 낡은 검 입니다. ",300,Itemtype.Weapon),
+                new Item("청동 도끼", 5.0f, 0, "어디선가 사용됐던거 같은 도끼입니다. ",700,Itemtype.Weapon),
+                new Item("스파르타의 창", 7.0f, 0, "스파르타의 전사들이 사용했다는 전설의 창입니다. ",1500,Itemtype.Weapon),
+                new Item("은 반지",1.0f,1,"공격력과 방어력을 소폭 높여주는 반지입니다.",600,Itemtype.Accessory),
+                new Item("금 반지",3.0f,2,"공격력과 방어력을 높여주는 반지입니다.",1000,Itemtype.Accessory),
+                new Item("옥 반지",5.0f,4,"한국의 얼과 혼이 담겨있다고 알려지는 반지입니다.",1700,Itemtype.Accessory),
+                new Item("절대 반지",10.0f,10,"공격력과 방어력을 소폭 높여주는 반지입니다.",5000,Itemtype.Accessory)
             };
 
             List<Item> purchasedItems = new List<Item>();
@@ -183,7 +183,7 @@ namespace SpartaDungeon.GameCore
             while (true)
             {
                 Console.Clear();
-                Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.\n");
+                Console.WriteLine("\n필요한 아이템을 얻을 수 있는 상점입니다.\n");
                 Console.WriteLine("[보유골드]");
                 Console.WriteLine(player.Gold + " G\n");
 
@@ -191,17 +191,20 @@ namespace SpartaDungeon.GameCore
                 for (int i = 0; i < shopItems.Count; i++)
                 {
                     Item item = shopItems[i];
-                    if (!purchasedItems.Contains(item))
+                    if (!player.PurchasedItemNames.Contains(item.Name))
                     {
                         Console.Write($"{i + 1}. ");
                         item.PrintInfo();
                     }
                 }
                 Console.WriteLine("\n[이미 구매한 아이템]");
-                foreach (Item item in purchasedItems)
+                foreach (var item in shopItems)
                 {
-                    Console.Write($"{shopItems.IndexOf(item) + 1}.");
-                    item.PrintInfo("[구매완료]");
+                    if (player.PurchasedItemNames.Contains(item.Name))
+                    {
+                        Console.Write($"{shopItems.IndexOf(item) + 1}.");
+                        item.PrintInfo("[구매완료]");
+                    }
                 }
                 Console.WriteLine("\n98. 판매 메뉴로 이동");
                 Console.WriteLine("\n0. 돌아가기");
@@ -223,7 +226,7 @@ namespace SpartaDungeon.GameCore
                         Item selectedItem = shopItems[choice - 1];
 
                         //이미 구매한 아이템인지 확인
-                        if (purchasedItems.Contains(selectedItem))
+                        if (player.PurchasedItemNames.Contains(selectedItem.Name))
                         {
                             Console.WriteLine("이 아이템은 이미 구매하셨습니다.");
                         }
@@ -231,8 +234,9 @@ namespace SpartaDungeon.GameCore
                         {
                             player.Gold -= selectedItem.Price;
                             player.Inventory.AddItem(selectedItem);
-                            purchasedItems.Add(selectedItem);
+                            player.PurchasedItemNames.Add(selectedItem.Name);
                             Console.WriteLine($"\n {selectedItem.Name} 구매를 완료했습니다!");
+                            Console.Clear();
                         }
                         else
                         {
@@ -477,19 +481,20 @@ namespace SpartaDungeon.GameCore
         //캐릭터 스탯 부모 클래스
         public string Name { get; set; }
         [JsonInclude] public string JobName { get; protected set; }
-        [JsonInclude] public int Attack { get; set; }
+        [JsonInclude] public float Attack { get; set; }
         [JsonInclude] public int Defense { get; set; }
         [JsonInclude] public int Hp { get; set; }
         [JsonInclude] public int Gold { get; set; }
         [JsonInclude] public Inventory Inventory { get; set; }
         [JsonInclude] public EquipmentManager Equipment { get; set; }
-        [JsonInclude] public int BaseAttack { get; protected set; }
+        [JsonInclude] public float BaseAttack { get; protected set; }
         [JsonInclude] public int BaseDefense { get; protected set; }
         [JsonInclude] public string ClassType;
         [JsonInclude] public int MaxHp { get; set; }
         [JsonInclude] public int Level { get; set; } = 1;
         [JsonInclude] public int Experience { get; set; }
         [JsonInclude] public int ExperienceToNextLevel => Level * 100;
+        [JsonInclude] public List<string> PurchasedItemNames { get; set; } = new();
 
 
         //캐릭터 생성 시 이름 설정 및 인벤토리와 장비 매니저 초기화
@@ -514,17 +519,17 @@ namespace SpartaDungeon.GameCore
             Console.WriteLine($"Lv.{Level}");
             Console.WriteLine($"{this.Name}({this.JobName})");
 
-            string attackBonuse = Attack > BaseAttack ? $" (+{Attack - BaseAttack})" : "";
+            string attackBonuse = Attack > BaseAttack ? $" (+{Attack - BaseAttack:F1})" : "";
             string defenseBonuse = Defense > BaseDefense ? $" (+{Defense - BaseDefense})" : "";
 
-            Console.WriteLine($"공격력 : {BaseAttack}{attackBonuse}");
+            Console.WriteLine($"공격력 : {BaseAttack:F1}{attackBonuse}");
             Console.WriteLine($"방어력 : {BaseDefense}{defenseBonuse}");
             Console.WriteLine($"체 력 : {Hp} / {MaxHp}");
             Console.WriteLine($"Gold : {Gold} G");
         }
 
         // 장착시 능력치 상승 메서드
-        public void IncreaseAttack(int amount)
+        public void IncreaseAttack(float amount)
         {
             Attack += amount;
         }
@@ -575,10 +580,11 @@ namespace SpartaDungeon.GameCore
         {
             Level++;
             MaxHp += 20;
-            Attack += 2;
+            BaseDefense += 1;
+            BaseAttack += 0.5f;
             Hp = MaxHp;
             Console.WriteLine($"\n레벨 업! {Level}레벨이 되었습니다.");
-            Console.WriteLine($"\nMaxHP: {MaxHp}, 공격력: {Attack}");
+            Console.WriteLine($"\nMaxHP: {MaxHp}, 공격력: {BaseAttack} 방어력:{BaseDefense}");
 
         }
 
@@ -640,11 +646,11 @@ namespace SpartaDungeon.GameCore
         [JsonInclude] public string Name { get; set; }
         [JsonInclude] public string Description { get; set; }
         [JsonInclude] public int Price { get; set; }
-        [JsonInclude] public int Attack { get; set; }
+        [JsonInclude] public float Attack { get; set; }
         [JsonInclude] public int Defense { get; set; }
         [JsonInclude] public Itemtype Type { get; set; }
 
-        public Item(string name, int attack = 0, int defense = 0, string description = "", int price = 0, Itemtype type = Itemtype.Weapon)
+        public Item(string name, float attack = 0, int defense = 0, string description = "", int price = 0, Itemtype type = Itemtype.Weapon)
         {
             Name = name;
             Attack = attack;
@@ -957,8 +963,8 @@ namespace SpartaDungeon.GameCore
         //던전 보상 메서드
         private void GrantReward(Character player)
         {
-            int reward = BaseReward + player.Attack * 10;
-            int bonusreward = player.Attack * 10;
+            int reward = BaseReward + (int)player.Attack * 10;
+            int bonusreward = (int)player.Attack * 10;
             player.Gold += reward;
             Console.WriteLine($"Gold: {BaseReward}+{bonusreward} G");
 
