@@ -304,6 +304,8 @@ namespace SpartaDungeon.GameCore
                 Console.WriteLine($"1. 첫번째 던전   | 권장 방어력: {FirstDungeon.RequiredDefense} | 보상: {FirstDungeon.BaseReward}");
                 Console.WriteLine($"2. 두번째 던전   | 권장 방어력: {SecondDungeon.RequiredDefense} | 보상: {SecondDungeon.BaseReward}");
                 Console.WriteLine($"3. 세번째 던전   | 권장 방어력: {ThirdDungeon.RequiredDefense} | 보상: {ThirdDungeon.BaseReward}");
+                Console.WriteLine($"4. 네번째 던전   | 권장 방어력: {FourthDungeon.RequiredDefense} | 보상: {FourthDungeon.BaseReward}");
+                Console.WriteLine($"5. 마지막 던전   | 권장 방어력: {FinalDungeon.RequiredDefense} | 보상: {FinalDungeon.BaseReward}");
                 Console.WriteLine("\n0. 돌아가기");
                 Console.WriteLine("\n 원하시는 행동을 입력해주세요.");
                 if (int.TryParse(Console.ReadLine(), out int choice))
@@ -319,6 +321,12 @@ namespace SpartaDungeon.GameCore
                         case 3:
                             ThirdDungeon.Enter(player);
                             break;
+                        case 4:
+                            FourthDungeon.Enter(player);
+                            break;
+                        case 5:
+                            FinalDungeon.Enter(player);
+                            break;        
                         case 0:
                             return;
                         default:
@@ -341,7 +349,8 @@ namespace SpartaDungeon.GameCore
                     break;
                 }
             }
-        }//첫번째 던전
+        }
+        //첫번째 던전
         Dungeon FirstDungeon = new Dungeon
         {
             Name = "첫번째 던전",
@@ -363,8 +372,25 @@ namespace SpartaDungeon.GameCore
             Name = "세번째 던전",
             RequiredDefense = 13,
             BaseReward = 700,
-            RewardExp = 60
+            RewardExp = 50
         };
+        Dungeon FourthDungeon = new Dungeon
+        {
+            Name = "네번째 던전",
+            RequiredDefense= 16,
+            BaseReward= 1200,
+            RewardExp= 80
+        };
+        Dungeon FinalDungeon = new Dungeon
+        {
+            Name = "최종 던전",
+            RequiredDefense = 20,
+            BaseReward = 1700,
+            RewardExp = 100
+        };
+        
+
+
 
 
         public void Rest(Character player)
