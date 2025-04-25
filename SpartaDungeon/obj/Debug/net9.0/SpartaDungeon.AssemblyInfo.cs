@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SpartaDungeon")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+54634805ecd24950ae3d5c158139d5d8cde4ba74")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+905fa3b3bb1ed1bb00dbfcb8e47666cbb0da48d0")]
 [assembly: System.Reflection.AssemblyProductAttribute("SpartaDungeon")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SpartaDungeon")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
